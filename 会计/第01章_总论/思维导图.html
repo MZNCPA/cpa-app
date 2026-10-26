@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会计第01章 · 知识卡片图</title>
+<style>
+ *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:96px 14px 60px;}
+ .topbar{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(15,23,42,.94);backdrop-filter:blur(8px);
+ padding:11px 16px;box-shadow:0 1px 12px rgba(0,0,0,.45);border-bottom:1px solid #1e293b;}
+ .topbar h1{font-size:16px;font-weight:800;color:#fff;}
+ .topbar small{color:#94a3b8;font-size:11px;display:block;margin-top:2px;}
+ .legend{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+ .legend b{font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;}
+ .l-must{background:#c0392b;color:#fff;}
+ .l-imp{background:#e67e22;color:#fff;}
+ .l-know{background:#16a085;color:#fff;}
+ .group-head{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;font-weight:800;font-size:13.5px;
+ padding:11px 12px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.35);letter-spacing:.5px;cursor:pointer;
+ -webkit-user-select:none;user-select:none;display:flex;justify-content:space-between;align-items:center;text-align:left;}
+ .group-head .arrow{font-size:11px;transition:transform .2s;opacity:.9;}
+ .group-head .gt{display:flex;align-items:center;gap:6px;min-width:0;flex:1;}
+ .group-head .gb{font-size:10px;padding:1px 7px;border-radius:20px;font-weight:800;color:#fff;flex-shrink:0;letter-spacing:0;}
+ .group-head .gb-must{background:#e11d48;box-shadow:0 0 0 2px rgba(225,29,72,.35);}
+ .group-head .gb-imp{background:#f59e0b;}
+ .col.collapsed .group-head .arrow{transform:rotate(-90deg);}
+ .col.collapsed .gc{display:none;}
+ .card{background:#1e293b;border-radius:14px;padding:11px 12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.3);
+ border:1px solid #283548;overflow:hidden;}
+ .card.must{border-left:4px solid #c0392b;--c:#c0392b;}
+ .card.imp{border-left:4px solid #eab308;--c:#eab308;}
+ .card.know{border-left:4px solid #64748b;--c:#64748b;}
+ .card .tt{display:flex;align-items:flex-start;gap:6px;font-weight:800;font-size:12.5px;color:#f1f5f9;line-height:1.4;}
+ .card .lv{flex-shrink:0;font-size:9px;font-weight:800;padding:1px 6px;border-radius:5px;color:#fff;margin-top:1px;}
+ .lv.must{background:#c0392b;} .lv.imp{background:#e67e22;} .lv.know{background:#16a085;}
+ .card .em{margin-left:auto;font-size:12px;flex-shrink:0;}
+ .card ul{list-style:none;margin-top:7px;}
+ .card li{font-size:11.5px;line-height:1.6;color:#a8b6c8;padding:3px 0 3px 13px;position:relative;background:none;}
+ .card li::before{content:"▸";position:absolute;left:0;color:var(--c);font-size:9px;top:4px;}
+ .card li b{color:#dbe4ef;font-weight:600;}
+ .card li .sub{display:block;padding-left:10px;color:#7d8ea3;font-size:10.8px;}
+ .card li .sub::before{content:"· ";}
+ .card .note{margin-top:7px;background:rgba(29,78,216,.14);border-left:3px solid #3b82f6;border-radius:8px;
+ padding:5px 9px;font-size:11px;color:#8db8ef;font-weight:600;line-height:1.55;}
+ .card .note::before{content:"👩🏫 老师强调: ";color:#60a5fa;}
+ #emask{display:none;position:fixed;inset:0;background:rgba(2,6,23,.72);z-index:1000;backdrop-filter:blur(2px);}
+ #emask.show{display:block;}
+ #emodal{display:none;position:fixed;z-index:1001;left:50%;top:52%;transform:translate(-50%,-50%);
+ width:88%;max-width:400px;max-height:82vh;overflow-y:auto;background:#1e293b;border:1px solid #334155;border-radius:16px;padding:16px;}
+ #emodal.show{display:block;}
+ #emodal h3{font-size:13.5px;color:#fff;margin-bottom:9px;line-height:1.5;padding-right:20px;}
+ #emodal .etype{display:inline-block;font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:5px;background:#4c1d95;color:#e9d5ff;margin-right:6px;}
+ #emodal .q{color:#e2e8f0;font-size:12.5px;line-height:1.6;margin:9px 0;}
+ #emodal .opt{font-size:12px;color:#cbd5e1;padding:4px 0;line-height:1.5;}
+ #emodal .kj{background:rgba(201,162,39,.12);border:1px dashed rgba(201,162,39,.5);border-radius:8px;padding:7px 11px;margin:9px 0;font-size:12.5px;color:#e6c96a;font-weight:600;}
+ #emodal .kj::before{content:"🔑 ";}
+ #emodal .note{background:rgba(29,78,216,.1);border-left:4px solid #3b82f6;border-radius:8px;padding:7px 11px;margin:9px 0;font-size:12px;color:#93c5fd;font-weight:600;line-height:1.55;}
+ #emodal .note::before{content:"👩🏫 老师强调: ";color:#60a5fa;}
+ #ansbtn{width:100%;padding:10px;border:none;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:700;font-size:13px;cursor:pointer;margin-top:6px;}
+ #ansbox{display:none;background:rgba(34,197,94,.08);border-left:4px solid #16a34a;border-radius:8px;padding:8px 11px;margin-top:9px;}
+ #ansbox.show{display:block;}
+ #ansbox .at{color:#4ade80;font-weight:800;font-size:12.5px;}
+ #ansbox .ax{color:#a7f3d0;font-size:11.5px;line-height:1.6;margin-top:4px;}
+ #ec{position:absolute;top:6px;right:12px;font-size:20px;color:#64748b;cursor:pointer;line-height:1;}
+ .tip{background:#334155;color:#94a3b8;border-radius:10px;padding:8px 11px;font-size:11px;margin:10px 0;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="topbar">
+ <h1>会计第01章 · 总论</h1>
+ <small>CPA《会计》| 考查约2分(单选/多选) | 核心:会计信息质量要求</small>
+ <div class="legend"><b class="l-must">必会·核心</b><b class="l-imp">重要</b><b class="l-know">了解</b></div>
+</div>
+<div id="grid" style="max-width:560px;margin:0 auto;"></div>
+<div id="emask"></div>
+<div id="emodal">
+ <span id="ec">✕</span>
+ <div id="eb"></div>
+</div>
+
+<script>
+const LVLBL={must:"必会·核心",imp:"重要",know:"了解"};
+const GROUPS=[
+ {name:"① 会计概述",g:"#8b5cf6",g2:"#7c3aed",cards:[
+  {id:1,t:"1 会计人员职业道德",lv:"know",
+   subs:[{t:"核心要求",kids:["抵制造假","维护国家财经纪律和经济秩序"]}]},
+  {id:2,t:"2 会计法规制度",lv:"know",exam:"e1",
+   subs:[{t:"原始凭证处理",kids:["不真实不合法→不予接受+报告","不准确不完整→退回更正补充"]},
+         {t:"责任/禁令",kids:["单位负责人对真实、完整负责","出纳不得兼任:稽核/档案保管/收付费用债权债务账目/会计软件管理"]},
+         {t:"外部监督",kids:["审计/税务/金融监管可依法监督检查"]}]}
+ ]},
+ {name:"② 目标·假设·会计基础",g:"#eab308",g2:"#ca8a04",cards:[
+  {id:3,t:"3 财务报告目标",lv:"know",
+   subs:[{t:"三大目标",kids:["提供财务状况/经营成果/现金流量信息","帮助外部投资者决策","反映管理层受托责任"]}]},
+  {id:4,t:"4 四大基本假设",lv:"know",exam:"e2",
+   subs:[{t:"会计主体",kids:["≠法律主体;法律主体⊂会计主体"],ex:"⚠️别混"},
+         {t:"持续经营"},{t:"会计分期",kids:["公历1.1~12.31"]},
+         {t:"货币计量"}]},
+  {id:5,t:"5 会计基础",lv:"know",
+   subs:[{t:"企业",kids:["权责发生制"]},
+         {t:"行政事业单位预算会计",kids:["收付实现制"]}]}
+ ]},
+ {name:"③ 会计信息质量要求",g:"#ef4444",g2:"#dc2626",cards:[
+  {id:6,t:"6 八大会计信息质量要求",lv:"must",note:"【本章核心·老师强调】真实性(可靠性)是相关性的前提——把『真实』写在『相关』之上,先可靠再相关;八大质量要求是财务报告应达到的质量标准,须按教材顺序熟记、并能举一反三对应例题",
+   subs:[
+    {t:"① 可靠性",kids:["以实际发生为依据、中立无偏、完整"],ex:"=真实性,是相关性之基"},
+    {t:"② 相关性",kids:["与决策相关:反馈价值+预测价值","引入公允价值→提升相关性"],ex:"以可靠性为前提"},
+    {t:"③ 可理解性",kids:["清晰明了"]},
+    {t:"④ 可比性",kids:["同一企业不同期一致政策、不得随意变更","不同企业同口径"]},
+    {t:"⑤ 实质重于形式",kids:["按经济实质而非仅法律形式","例:融资租赁视同自有"]},
+    {t:"⑥ 重要性",kids:["按金额+性质判断","不重要可简化"]},
+    {t:"⑦ 谨慎性",kids:["不高估资产/收益,不低估负债/费用","例:预计负债、估计退货量"]},
+    {t:"⑧ 及时性",kids:["不提前不延后"]}]},
+  {id:7,t:"例题A · 相关性",lv:"must",exam:"e3"},
+  {id:8,t:"例题B · 谨慎性",lv:"must",exam:"e4"},
+  {id:9,t:"例题C · 可比性与重要性",lv:"must",exam:"e5"}
+ ]},
+ {name:"④ 会计要素·确认·计量",g:"#22c55e",g2:"#16a34a",cards:[
+  {id:11,t:"11 六大要素",lv:"know",
+   subs:[{t:"资产负债表",kids:["资产/负债/所有者权益"]},
+         {t:"利润表",kids:["收入/费用/利润"]}]},
+  {id:12,t:"12 资产确认条件",lv:"know",exam:"e6",
+   subs:[{t:"两个条件",kids:["①经济利益很可能流入","②成本价值能可靠计量"]}]},
+  {id:13,t:"13 利得 vs 损失",lv:"know",exam:"e7",
+   subs:[{t:"计入所有者权益",kids:["其他综合收益(如其他债权投资公允变动)"]},
+         {t:"计入当期损益",kids:["公允价值变动损益、资产处置损益(处置固定资产/无形资产)"]},
+         {t:"注意",kids:["出租固定资产/投资性房地产→日常活动=收入(非利得)"]}]},
+  {id:14,t:"14 计量属性(5个)",lv:"know",
+   subs:[{t:"历史成本",kids:["默认"],ex:"📌现值=未来现金流折现(例:花300万买设备,未来付3个100万,折现约240万)"},
+         {t:"重置成本"},{t:"可变现净值"},{t:"现值"},{t:"公允价值",kids:["=市场价值=脱售价值"]},
+         {t:"备注",kids:["后4种须金额可靠计量才可采用"]}]}
+ ]},
+ {name:"⑤ 可持续信息披露",g:"#06b6d4",g2:"#0891b2",cards:[
+  {id:15,t:"15 定义与使用者",lv:"know",note:"老师预判:2027年再考概率不大,理解框架即可",
+   subs:[{t:"定义",kids:["披露企业在环境/社会/治理(ESG)的风险机遇和影响"]},
+         {t:"使用者",kids:["投资者、债权人(基本使用者)","+政府/员工/社会公众/客户等"]}]},
+  {id:16,t:"16 双重重要性",lv:"know",
+   subs:[{t:"财务重要性 + 影响重要性"},
+         {t:"消极影响",kids:["实际→看严重程度;潜在→严重程度+可能性"]},
+         {t:"积极影响",kids:["看规模和范围;潜在→+可能性"]}]},
+  {id:17,t:"17 质量要求6个",lv:"know",
+   subs:[{t:"6个",kids:["可靠性/相关性/可核性/可比性/可理解性/及时性"]},
+         {t:"注意",kids:["无重要性、无实质重于形式"]}]},
+  {id:18,t:"18 四大核心要素",lv:"know",exam:"e8",
+   subs:[{t:"治理",kids:["谁做"]},
+         {t:"战略",kids:["怎么想"]},
+         {t:"风险和机遇管理",kids:["怎么做"]},
+         {t:"指标和目标",kids:["要达成什么"]},
+         {t:"与财务报告",kids:["报告期间/主体范围/数据假设三一致"]}]}
+ ]},
+ {name:"⑥ 人工智能在会计审计",g:"#ec4899",g2:"#db2777",cards:[
+  {id:19,t:"19 AI在会计审计应用",lv:"know",note:"老师预判:2026年新增、2027年基本不考",
+   subs:[{t:"会计",kids:["自动识别/生成凭证/智能分析/风险控制/24h高效"]},
+         {t:"审计",kids:["自动采集分析/识别风险/提高效率质量"]},
+         {t:"边界",kids:["替代简单重复标准化工作","风险与责任由人承担"]}]}
+ ]}
+ ];
+const EXAM={
+ e1:{t:"多项选择",w:"下列做法中,不符合《会计法》及会计法规制度规定的有( )",q:["A. 出纳兼任稽核工作","B. 原始凭证不真实仍接受入账","C. 会计档案由出纳一人保管","D. 单位负责人对财务资料真实性负责"],a:"ABC",s:"D正确:单位负责人对真实性、完整性负责(A/B/C均违规,出纳不得兼任稽核和档案保管,不真实凭证应拒绝)"},
+ e2:{t:"单项选择题",w:"某企业当年已发货但商品控制权未转移给购货方,仍将其确认为当年收入。该做法违背的会计基本原则是( )",q:["A. 谨慎性","B. 会计分期","C. 重要性","D. 实质重于形式"],a:"B",s:"控制权未转移不应确认收入,提前确认收入,违背会计分期原则(应归属的会计期间把握不当)"},
+ e3:{t:"单项选择题",w:"企业将交易性金融负债按公允价值计量并确认其变动计入当期损益。这一做法主要体现的会计信息质量要求是( )",q:["A. 可靠性","B. 谨慎性","C. 相关性","D. 可比性"],a:"C",s:"采用公允价值计量并反映变动,向决策者提供与决策相关的价值信息,体现相关性"},
+ e4:{t:"单项选择题",w:"企业按《产品质量法》规定对已售产品确认预计保修负债。该处理体现的会计信息质量要求是( )",q:["A. 可靠性","B. 谨慎性","C. 可比性","D. 重要性"],a:"B",s:"预计负债不高估资产/不低估负债费用,体现谨慎性"},
+ e5:{t:"单项选择题",w:"甲公司补提一笔金额占比很小的20万元摊销,直接计入当期损益。该做法体现的会计信息质量要求是( )",q:["A. 重要性","B. 可靠性","C. 谨慎性","D. 相关性"],a:"A",s:"金额占比小、不影响决策,体现重要性(不重要的事项可简化处理)"},
+ e6:{t:"单项选择题",w:"企业为推广新产品,将一批设备免费赠送给代理商使用(所有权未转移)。下列处理正确的是( )",q:["A. 不确认固定资产,计入当期销售费用","B. 确认固定资产并计提折旧","C. 作为投资处理","D. 确认无形资产"],a:"A",s:"设备所有权未转移、经济利益未必流入,不满足资产确认条件,计入当期销售费用"},
+ e7:{t:"多项选择",w:"下列各项中,属于企业利得或损失的有( )",q:["A. 出租固定资产取得的租金收入","B. 处置固定资产净收益","C. 其他债权投资公允价值上升计入其他综合收益","D. 销售商品确认的收入"],a:"BC",s:"A出租固定资产属日常活动=收入(非利得);D销售商品为收入;处置资产净收益计入当期损益、其他债权公允价值变动计入其他综合收益,均属利得"},
+ e8:{t:"单项选择题",w:"某公司为督促减排,将温室气体减排指标完成情况纳入高管薪酬考核。该做法主要体现可持续信息披露四大核心要素中的( )",q:["A. 战略","B. 治理","C. 风险和机遇管理","D. 指标和目标"],a:"B",s:"将ESG指标纳入高管薪酬考核属于治理(监督和职责分工)范畴;韧性评估、风险政策流程属战略或风险管理"}
+};
+function gbOf(gr){
+ const hasMust=gr.cards.some(c=>c.lv==='must');
+ const hasImp=gr.cards.some(c=>c.lv==='imp');
+ if(hasMust)return '<span class="gb gb-must">含必考</span>';
+ if(hasImp)return '<span class="gb gb-imp">含重要</span>';
+ return '';
+}
+function openModal(c){
+ const e=EXAM[c.exam];let h='';
+ if(e){
+  h+=`<span class="etype">${e.t}</span><h3>${c.t}</h3><div class="q">${e.w}</div>`;
+  e.q.forEach(o=>h+=`<div class="opt">${o}</div>`);
+  if(c.kj)h+=`<div class="kj">${c.kj}</div>`;
+  if(c.note)h+=`<div class="note">${c.note}</div>`;
+  h+=`<button id="ansbtn">查看答案和解析</button><div id="ansbox"><div class="at">答案：${e.a}</div><div class="ax">${e.s}</div></div>`;
+ }else{
+  h+=`<span class="etype">要点</span><h3>${c.t}${c.exam?' <span class="em">📝</span>':''}</h3>`;
+  (c.subs||[]).forEach(sb=>{h+=`<div class="q"><b>${sb.t}</b>${sb.ex?' <span style="color:#64748b">· '+sb.ex+'</span>':''}</div>`;if(sb.kids)sb.kids.forEach(k=>h+=`<div class="q" style="padding-left:9px;border-left:2px solid #334155;margin-left:6px">· ${k}</div>`);});
+ }
+ document.getElementById('eb').innerHTML=h;
+ document.getElementById('eb').style.display='';
+ document.getElementById('emask').classList.add('show');
+ document.getElementById('emodal').classList.add('show');
+ const btn=document.getElementById('ansbtn');
+ if(btn)btn.onclick=()=>{document.getElementById('ansbox').classList.add('show');btn.style.display='none';};
+}
+document.getElementById('ec').onclick=()=>{emask.classList.remove('show');emodal.classList.remove('show');};
+emask.onclick=()=>{emask.classList.remove('show');emodal.classList.remove('show');};
+function render(){
+ const grid=document.getElementById('grid');
+ let html='';
+ GROUPS.forEach(gr=>{
+  html+=`<div class="col"><div class="group-head" style="--g:${gr.g};--g2:${gr.g2}"><span class="gt">${gr.name}${gbOf(gr)}</span><span class="arrow">▾</span></div><div class="gc">`;
+  gr.cards.forEach(c=>{
+   html+=`<div class="card c-${c.lv} ${c.lv}" data-id="${c.id}">
+    <div class="tt"><span class="lv ${c.lv}">${LVLBL[c.lv]}</span>${c.t}${c.exam?'<span class="em">📝</span>':''}</div>
+    <ul>`;
+   (c.subs||[]).forEach(sb=>{
+    html+=`<li><b>${sb.t}</b>${sb.ex?' <span style="color:#64748b">· '+sb.ex+'</span>':''}`;
+    if(sb.kids) sb.kids.forEach(k=>html+=`<span class="sub">${k}</span>`);
+    html+=`</li>`;
+   });
+   html+=`</ul>`;
+   if(c.kj)html+=`<div class="kj">${c.kj}</div>`;
+   if(c.note)html+=`<div class="note">${c.note}</div>`;
+   html+=`</div>`;
+  });
+  html+=`</div></div>`;
+ });
+ grid.innerHTML=html;
+ document.querySelectorAll('.group-head').forEach(gh=>{
+  gh.onclick=()=>gh.parentElement.classList.toggle('collapsed');
+ });
+ document.querySelectorAll('.card').forEach(el=>{
+  el.addEventListener('click',()=>{
+   const id=+el.getAttribute('data-id');
+   const card=GROUPS.flatMap(g=>g.cards).find(c=>c.id===id);
+   if(card)openModal(card);
+  });
+ });
+}
+render();
+</script>
+</body>
+</html>

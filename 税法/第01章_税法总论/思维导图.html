@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>税法第01章 · 知识卡片图</title>
+<style>
+ *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:96px 14px 60px;}
+ .topbar{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(15,23,42,.94);backdrop-filter:blur(8px);
+ padding:11px 16px;box-shadow:0 1px 12px rgba(0,0,0,.45);border-bottom:1px solid #1e293b;}
+ .topbar h1{font-size:16px;font-weight:800;color:#fff;}
+ .topbar small{color:#94a3b8;font-size:11px;display:block;margin-top:2px;}
+ .legend{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+ .lg{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;}
+ .lg.must{background:#c0392b;color:#fff;}
+ .lg.imp{background:#c9a227;color:#fff;}
+ .lg.know{background:#475569;color:#cbd5e1;}
+ .lg.exam{background:#1d4ed8;color:#fff;}
+
+ .root{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-weight:800;font-size:17px;
+ padding:18px;border-radius:16px;text-align:center;max-width:420px;margin:0 auto 6px;box-shadow:0 8px 26px rgba(124,58,237,.45);}
+ .root small{display:block;font-size:10.5px;font-weight:500;opacity:.9;margin-top:4px;}
+ .root-conn{width:2px;height:20px;background:#475569;margin:0 auto;}
+
+ .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;max-width:1400px;margin:6px auto 0;}
+ .col{display:flex;flex-direction:column;gap:10px;}
+ .group-head{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;font-weight:800;font-size:13.5px;
+ padding:11px 12px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.35);letter-spacing:.5px;cursor:pointer;
+ -webkit-user-select:none;user-select:none;display:flex;justify-content:space-between;align-items:center;text-align:left;}
+ .group-head .arrow{font-size:11px;transition:transform .2s;opacity:.9;}
+ .group-head .gt{display:flex;align-items:center;gap:6px;min-width:0;flex:1;}
+ .col.collapsed .group-head .arrow{transform:rotate(-90deg);}
+ .col.collapsed .gc{display:none;}
+ .group-head .gb{font-size:10px;padding:1px 7px;border-radius:20px;font-weight:800;color:#fff;flex-shrink:0;letter-spacing:0;}
+ .group-head .gb-must{background:#e11d48;box-shadow:0 0 0 2px rgba(225,29,72,.35);}
+ .group-head .gb-imp{background:#f59e0b;}
+
+ .card{background:#1e293b;border:1px solid #334155;border-left:5px solid var(--c,#64748b);border-radius:12px;
+ padding:11px 13px;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+ .card:active{transform:scale(.98);}
+ .card .tt{font-size:13.5px;font-weight:700;color:#f1f5f9;display:flex;align-items:center;gap:6px;flex-wrap:wrap;line-height:1.4;}
+ .card .lv{font-size:9px;padding:1.5px 7px;border-radius:20px;font-weight:700;flex:none;}
+ .lv.must{background:#c0392b;color:#fff;}
+ .lv.imp{background:#c9a227;color:#fff;}
+ .lv.know{background:#475569;color:#cbd5e1;}
+ .card .em{font-size:13px;flex:none;}
+ .card ul{list-style:none;margin-top:7px;}
+ .card li{font-size:11.5px;line-height:1.55;color:#a8b6c8;padding-left:13px;position:relative;}
+ .card li::before{content:"▸";position:absolute;left:0;color:var(--c);font-size:9px;top:2px;}
+ .card li b{color:#dbe4ef;font-weight:600;}
+ .card li .sub{display:block;padding-left:10px;color:#7d8ea3;font-size:10.8px;}
+ .card .kj{margin-top:7px;background:rgba(201,162,39,.12);border:1px dashed rgba(201,162,39,.5);border-radius:8px;
+ padding:5px 9px;font-size:11px;color:#e6c96a;font-weight:600;}
+ .card .kj::before{content:"🔑 ";}
+ .card .note{margin-top:7px;background:rgba(29,78,216,.14);border-left:3px solid #3b82f6;border-radius:8px;
+ padding:5px 9px;font-size:11px;color:#8db8ef;font-weight:600;line-height:1.55;}
+ .card .note::before{content:"👩🏫 老师强调: ";color:#60a5fa;}
+ .c-must{--c:#e05a4e;}
+ .c-imp{--c:#eab308;}
+ .c-know{--c:#64748b;}
+ .card.must{background:linear-gradient(160deg,#2a1a1e,#1e293b);border-color:#5c2e29;}
+ .card.imp{border-color:#4e4416;}
+
+ /* 例题弹层 */
+ #emask{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;opacity:0;pointer-events:none;transition:.18s;}
+ #emask.show{opacity:1;pointer-events:auto;}
+ #emodal{position:fixed;left:10px;right:10px;top:50%;transform:translateY(-50%) scale(.95);z-index:61;background:#1e293b;
+ border:1px solid #334155;border-radius:16px;box-shadow:0 14px 50px rgba(0,0,0,.6);max-height:86%;display:flex;flex-direction:column;
+ opacity:0;pointer-events:none;transition:.18s;}
+ #emodal.show{opacity:1;transform:translateY(-50%) scale(1);pointer-events:auto;}
+ #emodal .eh{padding:13px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #334155;flex:none;}
+ #emodal .etype{background:#1d4ed8;color:#fff;font-size:10px;padding:2px 9px;border-radius:20px;flex:none;font-weight:700;}
+ #emodal .et{font-size:14px;font-weight:700;color:#f1f5f9;flex:1;line-height:1.4;}
+ #emodal .ec{width:30px;height:30px;border:none;border-radius:50%;background:#334155;color:#cbd5e1;font-size:14px;flex:none;}
+ #emodal .eb{overflow-y:auto;padding:14px 16px 22px;-webkit-overflow-scrolling:touch;}
+ #emodal .sec{font-size:11px;color:#64748b;margin:10px 0 5px;font-weight:700;letter-spacing:1px;}
+ #emodal ul{list-style:none;}
+ #emodal li{font-size:13px;padding:4px 0 4px 15px;position:relative;line-height:1.55;color:#cbd5e1;}
+ #emodal li::before{content:"▸";color:#1d4ed8;position:absolute;left:0;font-size:10px;top:5px;}
+ #emodal .kj{background:rgba(201,162,39,.12);border:1px dashed rgba(201,162,39,.5);border-radius:8px;padding:7px 11px;margin:9px 0;font-size:12.5px;color:#e6c96a;font-weight:600;}
+ #emodal .kj::before{content:"🔑 ";}
+ #emodal .note{background:rgba(29,78,216,.1);border-left:4px solid #3b82f6;border-radius:8px;padding:7px 11px;margin:9px 0;font-size:12px;color:#93c5fd;font-weight:600;line-height:1.55;}
+ #emodal .note::before{content:"👩🏫 老师强调: ";color:#60a5fa;}
+ #emodal .examwrap{border-top:1px dashed #334155;padding-top:10px;margin-top:12px;}
+ #emodal .eq{font-size:13.5px;line-height:1.65;font-weight:600;color:#f1f5f9;}
+ #emodal .opt{font-size:12.8px;padding:8px 11px;margin:6px 0;background:#0f172a;border:1px solid #334155;border-radius:9px;line-height:1.5;color:#cbd5e1;}
+ #emodal .ansbtn{margin-top:12px;width:100%;padding:13px;border:none;border-radius:11px;
+ background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;font-size:14px;font-weight:700;}
+ #emodal .ansbtn:active{filter:brightness(.85);}
+ #emodal .ansbox{display:none;margin-top:12px;background:linear-gradient(135deg,#922b21,#c0392b);color:#fff;border-radius:11px;padding:13px 14px;font-size:13px;line-height:1.7;}
+ #emodal .ansbox.show{display:block;}
+ #emodal .ansbox .at{font-weight:800;font-size:15px;margin-bottom:4px;}
+ #emodal .ansbox .ax{background:rgba(255,255,255,.14);border-radius:8px;padding:8px 11px;margin-top:8px;font-size:12.5px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+ <h1>📘 税法 · 第01章 税法总论</h1>
+ <small>知识卡片图 · 19个知识点 · 点击卡片看完整例题（📝＝有例题）</small>
+ <div class="legend">
+  <span class="lg must">必会·核心</span>
+  <span class="lg imp">重要</span>
+  <span class="lg know">了解</span>
+  <span class="lg exam">📝 例题</span>
+ </div>
+</div>
+
+<div class="root">📗 第一章 税法总论
+ <small>CPA《税法》· 单选/多选 · 约3分</small>
+</div>
+<div class="root-conn"></div>
+
+<div class="grid" id="grid"></div>
+
+<div id="emask"></div>
+<div id="emodal">
+ <div class="eh"><span class="etype" id="etype"></span><div class="et" id="et"></div><button class="ec" id="ec">✕</button></div>
+ <div class="eb" id="eb"></div>
+</div>
+
+<script>
+/* ================= 数据 ================= */
+const GROUPS=[
+ {name:"① 税法基础",g:"#8b5cf6",g2:"#7c3aed",cards:[
+  {id:1,t:"1 税收与税法",lv:"know",exam:"e1",kj:"税收=切蛋糕的过程；税法=切蛋糕的规则(税收是分钱这个动作，税法是分钱的规矩)",
+   subs:[{t:"税收",kids:["本质=分配关系","依据=政治权力(非财产权力)","目的=满足社会公共需要"]},
+         {t:"税法",kids:["特点①义务性法规","特点②综合性法规"]}]},
+  {id:2,t:"2 税收法律关系",lv:"know",exam:"e2",kj:"客指对象，内容为王——客体=征税对象(主体权利义务指向的对象)，内容=权利义务(最实质的要素)",note:"征税主体只有税务机关+海关(不含工商/财政)，三要素必记",
+   subs:[{t:"三要素",kids:["主体:税务+海关/法人·自然·组织","客体=征税对象","内容=权利义务(最实质)"]},
+         {t:"产生/变更/消灭",kids:["由税收法律事实决定","事件(灾害/战争),行为(开业/停业)"]}]},
+  {id:3,t:"3 税法与其他法律的关系",lv:"know",
+   subs:[{t:"与宪法",kids:["公民有纳税义务"]},
+         {t:"与民法",kids:["平等 vs 命令服从","征纳以税法为准"]},
+         {t:"与刑法/行政法",kids:["调整对象、责任形式不同","税法具行政法属性"]}]}
+ ]},
+ {name:"② 税法原则",g:"#eab308",g2:"#ca8a04",cards:[
+  {id:4,t:"4 税法基本原则 ★",lv:"must",exam:"e4",kj:"公鸡定时笑——公=公平原则，定=法定原则，时=实质课税，笑=效率原则(四大基本原则)",
+   subs:[{t:"①税收法定",kids:["核心:税收要件法定+程序法定"]},
+         {t:"②税收公平",kids:["横向公平+纵向公平"]},
+         {t:"③实质课税",kids:["按经济实质,实质>形式"]},
+         {t:"④税收效率",kids:["经济效率+行政效率"]}]},
+  {id:5,t:"5 税法适用原则 ★",lv:"must",exam:"e5",note:"程序优于实体：先把税交了再告税务局",
+   subs:[{t:"①法律优位",kids:["法律>法规>规章"]},
+         {t:"②特别法优于普通法",kids:["打破效力等级限制"]},
+         {t:"③新法优于旧法",kids:["行为时新法已颁布→听新法"]},
+         {t:"④法律不溯及既往",kids:["行为时新法未颁布→用旧法"]},
+         {t:"⑤实体从旧·程序从新"},
+         {t:"⑥程序优于实体",kids:["先把税交了再去告税务局"]}]}
+ ]},
+ {name:"③ 税法的构成要素",g:"#f97316",g2:"#ea580c",cards:[
+  {id:6,t:"6 税法(种)要素概述",lv:"know",
+   subs:[{t:"11个要素",kids:["总则/纳税人/对象/税目/税率","环节/期限/地点/减免/罚则/附则"]}]},
+  {id:7,t:"7 税法要素(三结论)★",lv:"imp",exam:"e7",note:"三结论必会：征税对象=区别税种标志",
+   subs:[{t:"三结论",kids:["征税对象=区别税种重要标志","税目=体现征税广度","税率=衡量税负轻重"]},
+         {t:"三个时间",kids:["纳税义务发生时间","纳税期限","缴库期限"]}]}
+ ]},
+ {name:"④ 税收立法",g:"#ef4444",g2:"#dc2626",cards:[
+  {id:8,t:"8 税收立法原则",lv:"know",kj:"近15年只考1次",note:"老师明说非重点，读一遍即可(考的也是多选ABCD全对)",
+   subs:[{t:"5项原则",kids:["从实际出发","公平原则","民主决策","原则性+灵活性","稳定性·连续性"]}]},
+  {id:9,t:"9 税收立法权及其划分",lv:"know",exam:"e9",note:"立法权集中在中央，授权最多下放到省一级(就记到省一级)",
+   subs:[{t:"立法权集中于中央"},
+         {t:"授权下放",kids:["经国务院授权,最多下放到省级"]}]},
+  {id:10,t:"10 税收立法机关 ★",lv:"imp",exam:"e10",kj:"小土房没法住——小=消费税，土=土地增值税+城镇土地使用税，房=房产税，没法住=这4个仍以暂行条例实施(还没立法)",note:"本章非常重要！两种考法：给机关判文件/给文件判机关；以[法]字结尾=法律，[暂行条例]=授权立法",
+   subs:[{t:"税收法律",kids:["全国人大及其常委会"],ex:"例:企所税法/征管法"},
+         {t:"授权立法(准法律)",kids:["人大授权国务院"],ex:"例:消费税暂行条例"},
+         {t:"税收法规",kids:["国务院;地方人大仅海南/民族自治"],ex:"例:企所税法实施条例"},
+         {t:"税收规章",kids:["财政部/税务总局/海关总署;地方"],ex:"例:税务代理试行办法"}]},
+  {id:11,t:"11 税收立法程序",lv:"know",exam:"e11",kj:"替身同步——替=提议阶段，身=审议阶段，同=通过阶段，布=公布阶段(立法四阶段)",note:"考前可忽略，近15年只考1次多选",
+   subs:[{t:"提议 → 审议 → 通过公布"},
+         {t:"发布主体",kids:["法规:国务院(总理);法律:全国人大(主席)"]}]}
+ ]},
+ {name:"⑤ 税法体系与执法",g:"#22c55e",g2:"#16a34a",cards:[
+  {id:12,t:"12 我国现行税法体系",lv:"know",exam:"e12",note:"海关征税依据[海关法][关税法](小考点)，不用[税收征管法]",
+   subs:[{t:"实体法/程序法",kids:["税务依征管法;海关依海关法/关税法","直接税/间接税,价内/价外"]},
+         {t:"基本法",kids:["我国没有"]},
+         {t:"国际税法效力 > 国内税法"}]},
+  {id:13,t:"13 税收执法原则",lv:"know",kj:"⚠国际法优于国内法",note:"执法特有的一个原则：国际法优于国内法，注意别写反",
+   subs:[{t:"层次高的优于低的"},{t:"同一层次特别优于普通"},{t:"实体从旧程序从新"}]}
+ ]},
+ {name:"⑥ 税收收入与征管",g:"#06b6d4",g2:"#0891b2",cards:[
+  {id:14,t:"14 税款征收管理范围划分★",lv:"imp",note:"全国能征税的只有[税务机关+海关]两系统，财政系统无权直接介入征税",
+   subs:[{t:"海关系统4税",kids:["关税/船舶吨税","进出口环节增值税/消费税"]},
+         {t:"税务机关",kids:["其余全部税种(财政无权)"]}]},
+  {id:15,t:"15 税收收入划分 ★",lv:"must",exam:"e15",kj:"排除法口诀——中央:高大上(消费税)+车同轨(车购税)+国门(海关税)；地方:不动产(房·地+烟叶)+污染当地(环保·车船)；其余=央地共享",note:"王炸级考点！约2年考1次、50%以上必考，用排除法别硬背",
+   subs:[{t:"中央固定(3)",kids:["消费税(高大上—高档商品)→中央","车辆购置税(车同轨—标准全国统一只有中央能做)","关税/船舶吨税/海关代征(国门—海关收的归中央)"]},
+         {t:"地方固定(2)",kids:["不动产:契税/土增/房产/城镇土地/耕地(带房或地)+烟叶(长地上不动)","污染当地:车船税(尾气)+环保税"]},
+         {t:"央地共享",kids:["增值税五五开","企所税+个税六四开(例外:海洋石油/铁路/银行总行归中央—还是铁路行)","资源税(海洋石油归中央—资源还是归中央)","城建税(保险公司/铁路/银行集中缴归中央—城堡铁定行)","印花税:证券交易归中央"]}]}
+ ]},
+ {name:"⑦ 征纳主体与服务",g:"#ec4899",g2:"#db2777",cards:[
+  {id:16,t:"16 税机关和税务人员权利义务",lv:"know",
+   subs:[{t:"义务",kids:["普法/无偿纳税咨询","职责分离(征/管/稽/复议)","回避(夫妻/直系/三代旁系/近姻亲)"]}]},
+  {id:17,t:"17 纳税人、扣缴义务人权利义务",lv:"know",
+   subs:[{t:"纳税人权利7项",kids:["了解税法/保密/减免退税/陈述申辩","复议/诉讼/国家赔偿/检举控告"]},
+         {t:"保密范围",kids:["商业秘密+个人隐私,不含税收违法行为"]}]},
+  {id:18,t:"18 发展涉税专业服务",lv:"know",exam:"e18",note:"判断对应题：[纳税计划/方案]=税收策划；[出鉴证报告]=鉴证；[接受政府/司法委托]=纳税情况审查(尚方宝剑)",
+   subs:[{t:"6类业务",kids:["纳税申报代理","其他税务事项代理","咨询顾问","税收策划(原税务筹划)","涉税鉴证","纳税情况审查"]}]}
+ ]},
+ {name:"⑧ 国际税收",g:"#3b82f6",g2:"#2563eb",cards:[
+  {id:19,t:"19 国际税收关系",lv:"know",
+   subs:[{t:"税收管辖权",kids:["属地兼属人原则"]},
+         {t:"国际重复征税3类",kids:["税制性","法律性(同纳税人同税源)","经济性(母子公司同税源)"]},
+         {t:"防范",kids:["国际税收协定/反避税/BEPS"]}]}
+ ]}
+];
+const EXAM={
+ e1:{type:"多项选择",q:"关于税收与税法说法中，错误的有（ ）。",
+   opts:["A 税收在本质上是一种法律关系","B 国家征税的依据是财产权力","C 税法的特点是具有强制性和无偿性","D 国家征税的目的是增加国家财政收入"],
+   ans:"ABCD",exp:"A错:税收本质是分配关系而非法律关系;B错:征税依据是政治权力(非财产权力);C错:强制、无偿是税收的特点,税法特点为义务性+综合性;D错:目的是满足社会公共需要。"},
+ e2:{type:"单项选择题",q:"关于税收法律关系表述正确的是（ ）。",
+   opts:["A 征税主体包括政府机关与海关","B 客体是征纳双方的权利义务","C 税收法律事实是产生/变更/消灭的原因","D 税法可直接产生具体税收法律关系"],
+   ans:"C",exp:"A错:征税主体仅税务机关和海关;B错:客体是征税对象,权利义务是内容(最实质);C对:由税收法律事实(事件/行为)决定;D错:税法是前提,不直接产生。"},
+ e4:{type:"单项选择题",q:"下列各项中，属于税法基本原则的是（ ）。",
+   opts:["A 法律优位原则","B 税收法定原则","C 新法优于旧法原则","D 实体从旧程序从新原则"],
+   ans:"B",exp:"基本原则4项:法定/公平/实质课税/效率。法律优位、新法优于旧法、实体从旧程序从新属适用原则。"},
+ e5:{type:"多项选择",q:"下列各项中，属于税法适用原则的有（ ）。",
+   opts:["A 特别法优于普通法","B 程序优于实体","C 国内法优于国际法","D 法律优位"],
+   ans:"ABD",exp:"适用原则6项:法律优位/特别法优于普通/新法优于旧法/不溯及/实体从旧程序从新/程序优于实体。C错:我国是'国际法优于国内法'。"},
+ e7:{type:"单项选择题",q:"(2023)区分一种税与另一种税的重要标志是（ ）。",
+   opts:["A 纳税义务人","B 税率","C 征税对象","D 税目"],
+   ans:"C",exp:"征税对象是区分税种的重要标志;税目体现广度;税率衡量轻重。"},
+ e9:{type:"单项选择题",q:"尚未统一立法的地方税收，经国务院授权可制定实施办法的是（ ）。",
+   opts:["A 乡级政府","B 县级政府","C 市级政府","D 省级政府"],
+   ans:"D",exp:"中央集权,授权最多下放到省级人民政府,不能到市/县/乡。"},
+ e10:{type:"多项选择",q:"(2024)以税收法律形式颁布实施的税种有（ ）。",
+   opts:["A 企业所得税","B 车船税","C 印花税","D 消费税"],
+   ans:"ABC",exp:"消费税尚未立法,仍以《消费税暂行条例》(授权立法)。口诀小土房没法住:消费税/土地增值税/城镇土地使用税/房产税。"},
+ e11:{type:"多项选择",q:"下列属于税收立法程序主要阶段的有（ ）。",
+   opts:["A 提议阶段","B 审议阶段","C 通过阶段","D 公布阶段"],
+   ans:"ABCD",exp:"立法程序=提议→审议→通过→公布。行政法规由国务院公布,法律由全国人大公布。"},
+ e12:{type:"多项选择",q:"下列各项中，属于税收程序法的是（ ）。",
+   opts:["A 企业所得税法","B 个人所得税法","C 税收征收管理法","D 关税法"],
+   ans:"CD",exp:"程序法规定怎么征税:《税收征管法》管税务机关征纳,《关税法》管海关征纳。AB属实体法。"},
+ e15:{type:"单项选择题",q:"关于税收收入划分表述正确的是（ ）。",
+   opts:["A 增值税属于中央固定收入","B 车辆购置税属于地方固定收入","C 证券交易印花税属于中央固定收入","D 车船税属于中央固定收入"],
+   ans:"C",exp:"A错:增值税是共享税(五五开,海关代征归中央);B错:车购税是中央(车同轨);C对:印花税证券交易归中央,其余归地方;D错:车船税是地方(污染当地)。排除法:中央3类(高大上/车同轨/国门),地方2类(不动+污染)。"},
+ e18:{type:"单项选择题",q:"(2020)机构制定纳税计划并提供纳税方案，属于涉税专业服务中的（ ）。",
+   opts:["A 税收策划","B 涉税鉴证","C 纳税情况审查","D 纳税申报代理"],
+   ans:"A",exp:"'制定纳税计划与方案'符合税收策划(原税务筹划);鉴证=出报告;审查=受托代表政府;申报代理=代报税。"}
+};
+const LVLBL={must:"必会·核心",imp:"重要",know:"了解"};
+
+/* ================= 渲染 ================= */
+function gbOf(gr){
+ const hasMust=gr.cards.some(c=>c.lv==='must');
+ const hasImp=gr.cards.some(c=>c.lv==='imp');
+ if(hasMust)return '<span class="gb gb-must">含必考</span>';
+ if(hasImp)return '<span class="gb gb-imp">含重要</span>';
+ return '';
+}
+function render(){
+ const grid=document.getElementById('grid');
+ let html='';
+ GROUPS.forEach(gr=>{
+  html+=`<div class="col"><div class="group-head" style="--g:${gr.g};--g2:${gr.g2}"><span class="gt">${gr.name}${gbOf(gr)}</span><span class="arrow">▾</span></div><div class="gc">`;
+  gr.cards.forEach(c=>{
+   html+=`<div class="card c-${c.lv} ${c.lv}" data-id="${c.id}">
+    <div class="tt"><span class="lv ${c.lv}">${LVLBL[c.lv]}</span>${c.t}${c.exam?'<span class="em">📝</span>':''}</div>
+    <ul>`;
+   c.subs.forEach(sb=>{
+    html+=`<li><b>${sb.t}</b>${sb.ex?' <span style="color:#64748b">· '+sb.ex+'</span>':''}`;
+    if(sb.kids) sb.kids.forEach(k=>html+=`<span class="sub">· ${k}</span>`);
+    html+=`</li>`;
+   });
+   html+=`</ul>`;
+   if(c.kj)html+=`<div class="kj">${c.kj}</div>`;
+   if(c.note)html+=`<div class="note">${c.note}</div>`;
+   html+=`</div>`;
+  });
+  html+=`</div></div>`;
+ });
+ grid.innerHTML=html;
+ document.querySelectorAll('.group-head').forEach(gh=>{
+  gh.onclick=()=>gh.parentElement.classList.toggle('collapsed');
+ });
+ document.querySelectorAll('.card').forEach(el=>{
+  el.addEventListener('click',()=>{
+   const id=+el.getAttribute('data-id');
+   const card=GROUPS.flatMap(g=>g.cards).find(c=>c.id===id);
+   if(card)openModal(card);
+  });
+ });
+}
+
+/* ================= 详情/例题弹层 ================= */
+const emask=document.getElementById('emask'),emodal=document.getElementById('emodal'),
+      etype=document.getElementById('etype'),et=document.getElementById('et'),eb=document.getElementById('eb');
+function openModal(c){
+ etype.textContent=c.exam?EXAM[c.exam].type:"要点";
+ et.textContent=c.t;
+ let h='<div class="sec">知识点要点</div><ul>';
+ c.subs.forEach(sb=>{
+  h+=`<li><b>${sb.t}</b>${sb.ex?' · '+sb.ex:''}${sb.kids?'：'+sb.kids.join(' / '):''}</li>`;
+ });
+ h+='</ul>';
+ if(c.kj)h+=`<div class="kj">${c.kj}</div>`;
+ if(c.note)h+=`<div class="note">${c.note}</div>`;
+ if(c.exam&&EXAM[c.exam]){
+  const e=EXAM[c.exam];
+  h+=`<div class="examwrap"><div class="sec">📝 例题</div><div class="eq">${e.q}</div>`;
+  e.opts.forEach(o=>h+=`<div class="opt">${o}</div>`);
+  h+=`<button class="ansbtn" id="ansbtn">查看答案和解析</button>
+  <div class="ansbox" id="ansbox"><div class="at">答案：${e.ans}</div><div class="ax"><b>解析：</b>${e.exp}</div></div></div>`;
+ }
+ eb.innerHTML=h;
+ emask.classList.add('show');emodal.classList.add('show');
+ const btn=document.getElementById('ansbtn');
+ if(btn)btn.onclick=()=>{document.getElementById('ansbox').classList.add('show');btn.style.display='none';};
+}
+document.getElementById('ec').onclick=()=>{emask.classList.remove('show');emodal.classList.remove('show');};
+emask.onclick=()=>{emask.classList.remove('show');emodal.classList.remove('show');};
+
+render();
+</script>
+</body>
+</html>

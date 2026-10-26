@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CPA 备考助手</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;
+    -webkit-tap-highlight-color:transparent;}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f6fb;color:#1a1a2e;min-height:100vh;}
+  /* 顶部 */
+  .appbar{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:16px 18px 14px;
+    display:flex;align-items:center;gap:10px;box-shadow:0 2px 10px rgba(124,58,237,.3);}
+  .appbar .back{font-size:22px;cursor:pointer;line-height:1;min-width:28px;}
+  .appbar .title{font-size:17px;font-weight:700;line-height:1.3;}
+  .appbar .crumb{font-size:12px;opacity:.85;margin-top:2px;}
+  /* 主体 */
+  .screen{display:none;padding:16px;animation:fade .25s ease;}
+  .screen.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  /* 科目卡片 */
+  .subject{background:#fff;border-radius:16px;padding:18px;margin-bottom:14px;cursor:pointer;
+    box-shadow:0 1px 6px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px;
+    border:2px solid transparent;transition:.2s;}
+  .subject:active{border-color:#7c3aed;transform:scale(.98);}
+  .subject .ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;flex-shrink:0;}
+  .subject .nm{font-size:17px;font-weight:700;}
+  .subject .des{font-size:12.5px;color:#6b7280;margin-top:3px;}
+  .subject .arrow{margin-left:auto;color:#c4c4c4;font-size:20px;}
+  /* 章节列表 */
+  .sec-head{font-size:13px;color:#7c3aed;font-weight:700;margin:14px 0 8px;padding-left:4px;}
+  .chapter{background:#fff;border-radius:14px;padding:15px 16px;margin-bottom:10px;cursor:pointer;
+    box-shadow:0 1px 5px rgba(0,0,0,.05);border:2px solid transparent;transition:.2s;}
+  .chapter:active{border-color:#7c3aed;transform:scale(.98);}
+  .chapter .nm{font-size:15px;font-weight:700;color:#2c3e50;}
+  .chapter .meta{font-size:12px;color:#9ca3af;margin-top:3px;}
+  .chips{margin-top:8px;}
+  .chip{display:inline-block;font-size:11px;background:#f3effd;color:#6d28d9;border-radius:20px;padding:3px 9px;margin:2px 3px 0 0;}
+  .chip.must{background:#fdecea;color:#c0392b;}
+  .chapter .arrow{margin-left:auto;color:#c4c4c4;font-size:20px;text-align:right;}
+  /* 内容屏（思维导图式折叠） */
+  .content-wrap{background:#fff;border-radius:16px;padding:12px;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+  .c-title{font-size:15px;font-weight:700;color:#7c3aed;margin-bottom:10px;padding:8px 6px;border-bottom:2px solid #f3effd;}
+  details.sub{background:#eef3fb;border-radius:10px;margin:8px 0;overflow:hidden;}
+  details.sub>summary{cursor:pointer;padding:12px 14px;font-weight:700;color:#7c3aed;font-size:14px;list-style:none;display:flex;align-items:center;gap:8px;}
+  details.sub>summary::before{content:"▸";font-size:12px;transition:.15s;color:#7c3aed;flex-shrink:0;}
+  details.sub[open]>summary::before{content:"▾";}
+  details.sub>summary:hover{background:#e2eafa;}
+  .star-ico{color:#e11d48;}
+  .lv{font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:700;margin-left:auto;flex-shrink:0;}
+  .lv.must{background:#c0392b;color:#fff;}
+  .lv.imp{background:#c9a227;color:#fff;}
+  .lv.know{background:#7c8aa0;color:#fff;}
+  .sub-inner{padding:2px 14px 12px;background:#fff;}
+  .sub-inner ul{list-style:none;padding-left:4px;}
+  .sub-inner li{padding:3px 0 3px 16px;font-size:13.5px;position:relative;color:#374151;}
+  .sub-inner li::before{content:"•";color:#7c3aed;position:absolute;left:2px;font-weight:700;}
+  .kw{color:#7c3aed;font-weight:600;}
+  .teach{background:#fdf6e3;border-left:3px solid #eab308;border-radius:6px;padding:9px 11px;margin:8px 0;font-size:13.5px;}
+  .teach::before{content:"📌 老师强调 ";font-weight:700;color:#b8860b;}
+  .q{background:#e9f7ef;border-left:3px solid #1e8449;border-radius:6px;padding:9px 11px;margin:8px 0;font-size:13px;}
+  .q .ans{font-weight:700;color:#1e8449;}
+  .warn{background:#fdecea;border-left:3px solid #c0392b;border-radius:6px;padding:9px 11px;margin:8px 0;font-size:13px;}
+  .warn::before{content:"⚠️ 易错 ";font-weight:700;color:#c0392b;}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0;}
+  th,td{border:1px solid #e5e9f2;padding:7px 8px;text-align:left;}
+  th{background:#f3effd;color:#6d28d9;}
+  .empty{text-align:center;color:#9ca3af;padding:50px 20px;font-size:14px;}
+  .empty .big{font-size:44px;margin-bottom:10px;}
+  .switch{margin-top:16px;text-align:center;font-size:12px;color:#9ca3af;}
+</style>
+</head>
+<body>
+
+<div class="appbar">
+  <div class="back" id="backBtn" onclick="goBack()" style="visibility:hidden">‹</div>
+  <div class="title" id="appTitle">CPA 备考助手</div>
+  <div class="crumb"></div>
+</div>
+
+<!-- 层1: 科目 -->
+<div class="screen active" id="screen-subject">
+  <div class="subject" onclick="openSubject('accounting')">
+    <div class="ico" style="background:#3b82f6">📘</div>
+    <div>
+      <div class="nm">会计</div>
+      <div class="des">CPA《会计》单科 · 已整理章节</div>
+    </div>
+    <div class="arrow">›</div>
+  </div>
+  <div class="subject" onclick="openSubject('tax')">
+    <div class="ico" style="background:#10b981">📗</div>
+    <div>
+      <div class="nm">税法</div>
+      <div class="des">CPA《税法》单科 · 整理中</div>
+    </div>
+    <div class="arrow">›</div>
+  </div>
+  <div class="subject" onclick="openSubject('cta')">
+    <div class="ico" style="background:#f59e0b">📕</div>
+    <div>
+      <div class="nm">税务师(CTA)</div>
+      <div class="des">注册税务师 · 未开始</div>
+    </div>
+    <div class="arrow">›</div>
+  </div>
+</div>
+
+<!-- 层2: 章节 -->
+<div class="screen" id="screen-chapter">
+  <div id="chapterList"></div>
+</div>
+
+<!-- 层3: 内容 -->
+<div class="screen" id="screen-content">
+  <div class="content-wrap" id="contentBox"></div>
+</div>
+
+<script>
+/* ================= 数据 ================= */
+const DATA = {
+  accounting: {
+    name: "会计",
+    chapters: [
+      {
+        id:"acc1", name:"第01章 总论", score:"约2分", type:"单选/多选",
+        tags:[{t:"会计信息质量要求",m:true}],
+        content: [
+          {
+            t:"会计概述", star:false, level:"know",
+            items:[
+              "会计人员职业道德：<span class='kw'>抵制造假</span>、维护国家财经纪律和经济秩序",
+              "原始凭证：不真实不合法→<span class='kw'>不予接受＋报告</span>；不准确不完整→退回更正",
+              "单位<span class='kw'>负责人</span>对真实性、完整性负责",
+              "<span class='kw'>出纳不得兼任</span>：稽核、档案保管、收支/费用/债权债务账目登记、软件管理"
+            ],
+            q:{text:"【例题·多选】不符合会计法规制度 → ",ans:"ABC"}
+          },
+          {
+            t:"财务报告目标·基本假设·会计基础", star:false, level:"know",
+            items:[
+              "目标：提供财务状况/经营成果/现金流量信息；助外部投资者决策；反映受托责任",
+              "四大假设：会计主体、持续经营、会计分期(公历1.1-12.31)、货币计量",
+              "<span class='kw'>会计主体≠法律主体</span>：法律主体必是会计主体，反之不必",
+              "基础：<span class='kw'>权责发生制</span>(企业) / <span class='kw'>收付实现制</span>(行政事业单位)"
+            ],
+            warn:"会计主体 ≠ 法律主体（方向：法律主体⊂会计主体）",
+            q:{text:"【例题】商品控制权未转移却当年确认收入 → 违背 ",ans:"会计分期"}
+          },
+          {
+            t:"会计信息质量要求（8个）⭐", star:true, level:"must",
+            items:[
+              "口诀：<span class='kw'>可相可比实质重谨及</span>（可靠·相关·可理解·可比·实质重于形式·重要·谨慎·及时）",
+              "<span class='kw'>可靠性</span>：以实际发生为依据，中立无偏",
+              "<span class='kw'>相关性</span>⭐：与决策相关(反馈+预测价值)；引入公允价值→提升相关性",
+              "<span class='kw'>可比性</span>⭐：同一企业不同期一致/不得随意变更；不同企业同口径",
+              "<span class='kw'>谨慎性</span>⭐：不高估资产收益、不低估负债费用(预计负债/估退货量)；但也≠低估",
+              "<span class='kw'>重要性</span>：金额+性质判断",
+              "<span class='kw'>实质重于形式</span>：按经济实质非仅法律形式(融资租赁)",
+              "<span class='kw'>及时性</span>：不提前不延后"
+            ],
+            warn:"谨慎性≠低估资产收益；金融企业按流动性列报是'保可靠前提下保相关'",
+            table:{
+              head:["例题","体现/答案"],
+              rows:[
+                ["公允价值套期按公允价值计量(2024)","相关性 C"],
+                ["保修义务确认预计负债(2022)","谨慎性 B"],
+                ["反馈价值体现哪要求","相关性 A"],
+                ["不得随意变更会计政策","可比性 D"],
+                ["补提20万摊销直接计入当期","重要性 A"],
+                ["报表格式变更调整可比数据","可比性 A"]
+              ]
+            }
+          },
+          {
+            t:"会计要素及确认计量", star:false, level:"know",
+            items:[
+              "六要素：资产/负债/所有者权益(资产负债表)＋收入/费用/利润(利润表)",
+              "资产确认：①经济利益很可能流入 ②成本价值可可靠计量",
+              "利得损失：计入所有者权益→<span class='kw'>其他综合收益</span>；计入损益→公允价值变动/资产处置损益",
+              "<span class='kw'>出租</span>固定资产/投资性房地产→<span class='kw'>日常活动＝收入</span>(非利得)",
+              "计量属性：<span class='kw'>历史成本</span>(默认)、重置成本、可变现净值、<span class='kw'>现值</span>、<span class='kw'>公允价值</span>=市场价值=脱售价值",
+              "后4种须金额可可靠计量才可采用"
+            ],
+            teach:"现值＝未来现金流折现(例：花300万买设备，未来付3个100万，折现约240万)；融资租赁再讲",
+            q:{text:"【例题】设备免费送代理商 → ",ans:"不确认资产，计入当期销售费用"}
+          },
+          {
+            t:"可持续信息披露", star:false, level:"know",
+            items:[
+              "披露企业在<span class='kw'>环境/社会/治理(ESG)</span>的风险机遇影响",
+              "使用者：投资者债权人(基本使用者)＋政府/员工/公众/客户",
+              "<span class='kw'>双重重要性</span>：财务重要性＋影响重要性",
+              "消极影响：实际→看严重程度；潜在→严重程度＋可能性",
+              "积极影响：看规模和范围；潜在→＋可能性",
+              "质量要求6个：可靠·相关·可核·可比·可理解·及时(<b>无重要性、无实质重于形式</b>)",
+              "四大要素：治理(谁做)·战略(怎么想)·风险管理(怎么做)·指标目标(达成什么)"
+            ],
+            teach:"老师预判：2027年再考概率不大；四大要素口诀：谁做·怎么想·怎么做·达成什么",
+            q:{text:"【例题】温室气体减排指标纳入高管薪酬 → ",ans:"治理要素"}
+          },
+          {
+            t:"人工智能在会计审计的应用", star:false, level:"know",
+            items:[
+              "会计：自动识别(合同/发票/流水)、自动生成凭证、智能分析、风险控制、24h高效",
+              "审计：自动采集分析、识别风险、提高效率质量",
+              "边界：AI替代简单重复标准化工作；<span class='kw'>风险与责任由人承担</span>"
+            ],
+            teach:"老师预判：26年新增、27年基本不考；AI不会取代会计人"
+          }
+        ]
+      }
+    ]
+  },
+  tax: { name:"税法", chapters:[], note:"整理中" },
+  cta: { name:"税务师(CTA)", chapters:[], note:"未开始" }
+};
+
+/* ================= 导航逻辑 ================= */
+let stack = [];
+const screens = {subject:'screen-subject', chapter:'screen-chapter', content:'screen-content'};
+const backBtn = document.getElementById('backBtn');
+const appTitle = document.getElementById('appTitle');
+
+function showScreen(key){
+  Object.values(screens).forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById(screens[key]).classList.add('active');
+}
+function setBar(title, showBack){
+  appTitle.innerHTML = title;
+  backBtn.style.visibility = showBack ? 'visible':'hidden';
+}
+
+function openSubject(key){
+  const s = DATA[key];
+  if(!s) return;
+  if(!s.chapters || s.chapters.length===0){
+    stack = ['subject'];
+    setBar(s.name, true);
+    document.getElementById('chapterList').innerHTML =
+      `<div class="empty"><div class="big">📭</div><div>「${s.name}」${s.note||'暂无整理章节'}</div></div>`;
+    showScreen('chapter');
+    return;
+  }
+  stack = ['subject', key];
+  setBar(s.name, true);
+  renderChapters(key, s);
+  showScreen('chapter');
+}
+function renderChapters(key, s){
+  let html = `<div class="sec-head">${s.name} · 已整理章节</div>`;
+  if(!s.chapters.length){
+    html = `<div class="empty"><div class="big">📭</div><div>「${s.name}」${s.note||'暂无内容'}</div></div>`;
+  }
+  s.chapters.forEach(ch=>{
+    let chips = ch.tags.map(tg=>`<span class="chip ${tg.m?'must':''}">${tg.t}</span>`).join('');
+    html += `<div class="chapter" onclick="openChapter('${key}','${ch.id}')">
+      <div style="display:flex;align-items:center">
+        <div style="flex:1">
+          <div class="nm">${ch.name}</div>
+          <div class="meta">考查分值 ${ch.score} · 题型 ${ch.type}</div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="chips">${chips}</div>
+    </div>`;
+  });
+  document.getElementById('chapterList').innerHTML = html;
+}
+function openChapter(key, chid){
+  const ch = DATA[key].chapters.find(c=>c.id===chid);
+  if(!ch) return;
+  stack = ['subject', key, chid];
+  setBar(ch.name, true);
+  renderContent(ch);
+  showScreen('content');
+}
+function renderContent(ch){
+  let html = `<div class="c-title">${ch.name} · 重点（点击小章节展开）</div>`;
+  let idx=0;
+  ch.content.forEach(sec=>{
+    idx++;
+    const openAttr = idx===1 ? ' open' : '';
+    const lvMap = {must:'必会·核心', imp:'必会', know:'了解'};
+    const lvCls = sec.level==='must'?'must':(sec.level==='imp'?'imp':'know');
+    let body = `<div class="sub-inner">
+      <ul>`+ sec.items.map(i=>`<li>${i}</li>`).join('') +`</ul>`;
+    if(sec.teach) body += `<div class="teach">${sec.teach}</div>`;
+    if(sec.warn) body += `<div class="warn">${sec.warn}</div>`;
+    if(sec.q) body += `<div class="q">📝${sec.q.text}<span class="ans">${sec.q.ans}</span></div>`;
+    if(sec.table){
+      body += `<table><tr>`+sec.table.head.map(h=>`<th>${h}</th>`).join('')+`</tr>`;
+      sec.table.rows.forEach(r=>{ body += `<tr>`+r.map(c=>`<td>${c}</td>`).join('')+`</tr>`; });
+      body += `</table>`;
+    }
+    body += `</div>`;
+    html += `<details class="sub"${openAttr}>`+
+      `<summary>${sec.star?'<span class="star-ico">★</span>':''}${sec.t}`+
+      `<span class="lv ${lvCls}">${lvMap[sec.level]||'了解'}</span></summary>${body}</details>`;
+  });
+  document.getElementById('contentBox').innerHTML = html;
+}
+function goBack(){
+  if(stack.length===0) return;
+  stack.pop();
+  if(stack.length===0){
+    setBar('CPA 备考助手', false); showScreen('subject');
+  } else if(stack.length===1){
+    openSubject(stack[0]);
+  } else if(stack.length===2){
+    openSubject(stack[1]);
+  }
+}
+</script>
+</body>
+</html>
